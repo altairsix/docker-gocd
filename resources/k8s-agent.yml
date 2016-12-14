@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gocd-agent
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        service: gocd-agent
+    spec:
+      containers:
+        - name: gocd-agent
+          image: altairsix/gocd-agent:16.12.0
+          env:
+            - name: GO_SERVER
+              value: gocd-server
+            - name: MYSQL_USER
+              value: gocd
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+            - name: MYSQL_DATABASE
+              value: gocd
+            - name: PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ssh-git
+                  key: "id_rsa"
+            - name: PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ssh-git
+                  key: "id_rsa.pub"
+        - name: mysql
+          image: mysql:5.7
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_USER
+              value: gocd
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+            - name: MYSQL_DATABASE
+              value: gocd

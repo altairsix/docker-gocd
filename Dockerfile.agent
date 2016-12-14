@@ -40,6 +40,15 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 RUN apt-get install -y nodejs
 RUN npm install -g postcss-cli autoprefixer cssnano-cli
 
+
+# install kubectl
+#
+RUN apt-get install -y lsb-release apt-transport-https && \
+  (echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list) && \
+  (curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -) && \
+  apt-get update && \
+  apt-get install -y kubectl
+
 ADD resources/known_hosts /root/.ssh/known_hosts
 ADD resources/wrap.sh /bin/wrap.sh
 

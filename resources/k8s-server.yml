@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gocd-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: gocd-server
+    spec:
+      containers:
+        - name: gocd-server
+          image: altairsix/gocd-server:16.12.0
+          env:
+            - name: PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ssh-git
+                  key: "id_rsa"
+            - name: PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ssh-git
+                  key: "id_rsa.pub"
+          ports:
+            - containerPort: 8153
+            - containerPort: 8154
+          volumeMounts:
+            - name: gocd-etc-go
+              mountPath: /etc/go
+            - name: gocd-var-lib
+              mountPath: /var/lib/go-server
+            - name: gocd-var-log
+              mountPath: /var/log/go-server
+          securityContext:
+            privileged: true
+      volumes:
+        - name: gocd-etc-go
+          gcePersistentDisk:
+            pdName: gocd-etc-go
+            fsType: ext4
+        - name: gocd-var-lib
+          gcePersistentDisk:
+            pdName: gocd-var-lib
+            fsType: ext4
+        - name: gocd-var-log
+          gcePersistentDisk:
+            pdName: gocd-var-log
+            fsType: ext4
