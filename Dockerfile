@@ -1,0 +1,56 @@
+FROM ubuntu:16.04
+MAINTAINER Matt Ho
+
+#--[ DO NOT MODIFY BELOW THIS POINT ]------------------------------------
+
+ENV GOCD_VERSION 16.12.0-4352
+ENV GOCD_DEB     go-server_${GOCD_VERSION}_all.deb
+
+# install oracle jdk 8
+RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
+RUN apt-get update && apt-get install -y software-properties-common python-software-properties
+RUN add-apt-repository ppa:webupd8team/java -y
+
+RUN apt-get update
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+RUN apt-get install -y oracle-java8-installer
+
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+
+# install dependencies
+RUN apt-get update && apt-get install -y curl wget unzip 
+
+# install go-agent
+ENV DAEMON             N
+ENV GO_SERVER_PORT     8153
+ENV GO_SERVER_SSL_PORT 8154
+ENV SERVER_WORK_DIR    /var/lib/go-server
+RUN echo curl -L -o /tmp/${GOCD_DEB} https://download.go.cd/binaries/${GOCD_VERSION}/deb/${GOCD_DEB} && \
+    curl -L -o /tmp/${GOCD_DEB} https://download.go.cd/binaries/${GOCD_VERSION}/deb/${GOCD_DEB} && \
+    dpkg -i /tmp/${GOCD_DEB} && \
+    rm -f /tmp/${GOCD_DEB} && \
+    rm -f /etc/default/go-server
+
+#--[ BUILD DEPENDENCIES ]------------------------------------------------
+
+# install all the vcs tools
+RUN apt-get update && apt-get install -y git subversion bzr mercurial
+
+# install docker
+RUN apt-get update && apt-get install -y docker.io
+
+# add java to path
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${JAVA_HOME}/bin
+
+VOLUME /etc/go
+VOLUME /var/lib/go-server
+VOLUME /var/log/go-server     
+
+EXPOSE 8153
+EXPOSE 8154
+
+ADD resources/known_hosts /root/.ssh/known_hosts
+ADD resources/wrap.sh /bin/wrap.sh
+
+CMD ["/bin/wrap.sh", "/usr/share/go-server/server.sh"]
+
