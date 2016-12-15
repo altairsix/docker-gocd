@@ -1,24 +1,20 @@
 FROM gocd/gocd-agent:16.12.0
 MAINTAINER Altair Six
 
-RUN apt-get update && apt-get install -y wget zip unzip curl telnet phantomjs python-pip
+RUN apt-get update && apt-get install -y wget zip unzip curl telnet phantomjs python-pip lsb-release apt-transport-https ca-certificates
 RUN pip install awscli
 RUN \
 	wget -O /tmp/golang.tar.gz https://storage.googleapis.com/golang/go1.7.4.linux-amd64.tar.gz && \
 	tar -C /usr/local -xzf /tmp/golang.tar.gz && \
 	rm /tmp/golang.tar.gz
 
-# add support for docker in docker
-#
-RUN \
-	apt-get update && apt-get install -y docker.io && \
-	chmod 4755 /usr/bin/docker
 
 # added tool support
 #
 ENV PATH ${PATH}:/usr/local/go/bin:/opt/tools/bin
 RUN echo 'export PATH=${PATH}:/usr/local/go/bin:/opt/tools/bin' >> /etc/profile
 RUN GOPATH=/opt/tools go get -u github.com/jstemmer/go-junit-report
+
 
 # added Clojure support
 #
@@ -34,6 +30,7 @@ RUN \
 	chmod +x /bin/lein && \
 	su - go -c lein
 
+
 # added npm support
 #
 RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
@@ -43,11 +40,12 @@ RUN npm install -g postcss-cli autoprefixer cssnano-cli
 
 # install kubectl
 #
-RUN apt-get install -y lsb-release apt-transport-https && \
-  (echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list) && \
+RUN (echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list) && \
   (curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -) && \
   apt-get update && \
   apt-get install -y kubectl
+
+RUN echo "go ALL = (root) NOPASSWD: /usr/bin/docker" | tee -a /etc/sudoers
 
 ADD resources/known_hosts /root/.ssh/known_hosts
 ADD resources/wrap.sh /bin/wrap.sh
