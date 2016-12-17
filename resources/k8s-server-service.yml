@@ -4,15 +4,12 @@ metadata:
   name: gocd-server
 spec:
   ports:
-    - port: 443
-      targetPort: 8154
-      name: ssl
     - port: 8154
       targetPort: 8154
-      name: agent
+      name: http
+    - port: 8153
+      targetPort: 8153
+      name: https
   selector:
     service: gocd-server
-  type: LoadBalancer
-  loadBalancerSourceRanges:
-    - 50.131.228.169/32
 
