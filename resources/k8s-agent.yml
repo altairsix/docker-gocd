@@ -38,6 +38,8 @@ spec:
               mountPath: /usr/bin/docker
             - name: docker-socket
               mountPath: /var/run/docker.sock
+            - name: docker-flowz
+              mountPath: /etc/docker/flowz
         - name: mysql
           image: mysql:5.7
           ports:
@@ -58,4 +60,7 @@ spec:
         - name: docker-socket
           hostPath:
             path: /var/run/docker.sock
+        - name: docker-flowz
+          secret:
+            secretName: docker-flowz
 
