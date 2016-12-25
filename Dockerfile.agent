@@ -47,6 +47,10 @@ RUN (echo "deb https://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c 
 
 RUN echo "go ALL = (root) NOPASSWD: /usr/bin/docker" | tee -a /etc/sudoers
 
+# install mysql
+#
+RUN apt-get update && apt-get install -y mysql-client
+
 ADD resources/known_hosts /root/.ssh/known_hosts
 ADD resources/wrap.sh /bin/wrap.sh
 

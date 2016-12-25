@@ -53,6 +53,10 @@ spec:
               value: password
             - name: MYSQL_DATABASE
               value: gocd
+        - name: memcache
+          image: memcached
+          ports:
+            - containerPort: 11211
       volumes:
         - name: docker-bin
           hostPath:
