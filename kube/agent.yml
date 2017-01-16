@@ -39,8 +39,10 @@ spec:
               mountPath: /usr/bin/docker
             - name: docker-socket
               mountPath: /var/run/docker.sock
-            - name: docker-flowz
-              mountPath: /etc/docker/flowz
+            - name: usr-lib
+              mountPath: /usr/lib/x86_64-linux-gnu
+            - name: lib
+              mountPath: /lib/x86_64-linux-gnu
         - name: mysql
           image: mysql:5.7
           ports:
@@ -58,6 +60,10 @@ spec:
           image: memcached
           ports:
             - containerPort: 11211
+        - name: dynamodb
+          image: savaki/dynamodb:latest
+          ports:
+            - containerPort: 8000
       volumes:
         - name: docker-bin
           hostPath:
@@ -65,7 +71,10 @@ spec:
         - name: docker-socket
           hostPath:
             path: /var/run/docker.sock
-        - name: docker-flowz
-          secret:
-            secretName: docker-flowz
+        - name: usr-lib
+          hostPath:
+            path: /usr/lib/x86_64-linux-gnu
+        - name: lib
+          hostPath:
+            path: /lib/x86_64-linux-gnu
 

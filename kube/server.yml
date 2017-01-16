@@ -38,14 +38,15 @@ spec:
             privileged: true
       volumes:
         - name: gocd-etc-go
-          gcePersistentDisk:
-            pdName: gocd-etc-go
+          awsElasticBlockStore:
+            volumeID: vol-0a2e40cdbe775300b
             fsType: ext4
         - name: gocd-var-lib
-          gcePersistentDisk:
-            pdName: gocd-var-lib
+          awsElasticBlockStore:
+            volumeID: vol-02fd443fd783ecf29
             fsType: ext4
         - name: gocd-var-log
-          gcePersistentDisk:
-            pdName: gocd-var-log
+          awsElasticBlockStore:
+            volumeID: vol-02847c1f8c30751bc
             fsType: ext4
+
