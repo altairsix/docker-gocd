@@ -2,6 +2,7 @@ FROM gocd/gocd-agent:17.2.0
 MAINTAINER Altair Six
 
 RUN apt-get update && apt-get install -y wget zip unzip curl telnet phantomjs python-pip lsb-release apt-transport-https ca-certificates
+RUN update-ca-certificates -f
 RUN pip install awscli
 RUN \
 	wget -O /tmp/golang.tar.gz https://storage.googleapis.com/golang/go1.8.linux-amd64.tar.gz && \
