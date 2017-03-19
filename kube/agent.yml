@@ -39,10 +39,6 @@ spec:
               mountPath: /usr/bin/docker
             - name: docker-socket
               mountPath: /var/run/docker.sock
-            - name: usr-lib
-              mountPath: /usr/lib/x86_64-linux-gnu
-            - name: lib
-              mountPath: /lib/x86_64-linux-gnu
         - name: mysql
           image: mysql:5.7
           ports:
@@ -71,10 +67,3 @@ spec:
         - name: docker-socket
           hostPath:
             path: /var/run/docker.sock
-        - name: usr-lib
-          hostPath:
-            path: /usr/lib/x86_64-linux-gnu
-        - name: lib
-          hostPath:
-            path: /lib/x86_64-linux-gnu
-

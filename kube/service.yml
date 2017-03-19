@@ -5,18 +5,9 @@ metadata:
   namespace: gocd
 spec:
   ports:
-    - port: 80
-      targetPort: 8154
-      name: http
     - port: 443
-      targetPort: 8153
-      name: https
-    - port: 8154
       targetPort: 8154
-      name: gocd-http
-    - port: 8153
-      targetPort: 8153
-      name: gocd-https
+      name: https
   selector:
     service: gocd-server
   type: LoadBalancer
