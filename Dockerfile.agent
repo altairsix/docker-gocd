@@ -1,6 +1,8 @@
 FROM gocd/gocd-agent:17.2.0
 MAINTAINER Altair Six
 
+ENV BUILT Fri Mar 10 10:02:14 PST 2017
+
 RUN apt-get update && apt-get install -y wget zip unzip curl telnet phantomjs python-pip lsb-release apt-transport-https ca-certificates
 RUN update-ca-certificates -f
 RUN pip install awscli
